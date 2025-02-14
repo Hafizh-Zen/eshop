@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/product")
+@RequestMapping("/product")  // ✅ All URLs now start with /product
 public class ProductController {
 
     @Autowired
@@ -20,19 +20,27 @@ public class ProductController {
     public String createProductPage(Model model) {
         Product product = new Product();
         model.addAttribute("product", product);
-        return "createProduct";
+        return "CreateProduct";  // ✅ Matches "CreateProduct.html" exactly
     }
 
     @PostMapping("/create")
     public String createProductPost(@ModelAttribute Product product, Model model) {
         service.create(product);
-        return "redirect:list";
+        return "redirect:/product/list";  // ✅ Correct absolute redirect
     }
 
     @GetMapping("/list")
     public String productListPage(Model model) {
         List<Product> allProducts = service.findAll();
         model.addAttribute("products", allProducts);
-        return "productList";
+        return "productList";  // ✅ Must match 'productList.html' exactly
+    }
+
+    @GetMapping("/debug")
+    @ResponseBody
+    public String debugTemplates() {
+        ClassLoader classLoader = getClass().getClassLoader();
+        java.net.URL resource = classLoader.getResource("templates/productList.html");  // ✅ Correct path
+        return (resource != null) ? "Template Found: " + resource.toString() : "Template NOT found!";
     }
 }
