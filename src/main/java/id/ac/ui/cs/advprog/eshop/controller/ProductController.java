@@ -20,20 +20,20 @@ public class ProductController {
     public String createProductPage(Model model) {
         Product product = new Product();
         model.addAttribute("product", product);
-        return "CreateProduct";  // ✅ Matches "CreateProduct.html" exactly
+        return "CreateProduct";
     }
 
     @PostMapping("/create")
     public String createProductPost(@ModelAttribute Product product, Model model) {
         service.create(product);
-        return "redirect:/product/list";  // ✅ Correct absolute redirect
+        return "redirect:/product/list";
     }
 
     @GetMapping("/list")
     public String productListPage(Model model) {
         List<Product> allProducts = service.findAll();
         model.addAttribute("products", allProducts);
-        return "productList";  // ✅ Must match 'productList.html' exactly
+        return "productList";
     }
 
     @GetMapping("/debug")
@@ -42,5 +42,11 @@ public class ProductController {
         ClassLoader classLoader = getClass().getClassLoader();
         java.net.URL resource = classLoader.getResource("templates/productList.html");  // ✅ Correct path
         return (resource != null) ? "Template Found: " + resource.toString() : "Template NOT found!";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteProduct(@PathVariable("id") int productId) {
+        service.delete(productId);
+        return "redirect:/product/list";
     }
 }
