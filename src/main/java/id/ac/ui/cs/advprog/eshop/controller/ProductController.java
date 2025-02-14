@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/product")  // ✅ All URLs now start with /product
+@RequestMapping("/product")
 public class ProductController {
 
     @Autowired
@@ -40,7 +40,7 @@ public class ProductController {
     @ResponseBody
     public String debugTemplates() {
         ClassLoader classLoader = getClass().getClassLoader();
-        java.net.URL resource = classLoader.getResource("templates/productList.html");  // ✅ Correct path
+        java.net.URL resource = classLoader.getResource("templates/productList.html");
         return (resource != null) ? "Template Found: " + resource.toString() : "Template NOT found!";
     }
 
