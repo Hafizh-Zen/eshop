@@ -69,4 +69,50 @@ class ProductRepositoryTest {
 
         assertFalse(productIterator.hasNext());
     }
+    @Test
+    void testDeleteProduct() {
+        Product product = new Product();
+        product.setProductId("delete-test");
+        product.setProductName("To Be Deleted");
+        product.setProductQuantity(10);
+        productRepository.create(product);
+
+        productRepository.delete("delete-test");
+
+        Iterator<Product> productIterator = productRepository.findAll();
+        while (productIterator.hasNext()) {
+            assertNotEquals("delete-test", productIterator.next().getProductId());
+        }
+    }
+
+    @Test
+    void testUpdateProduct() {
+        Product product = new Product();
+        product.setProductId("update-test");
+        product.setProductName("Old Name");
+        product.setProductQuantity(5);
+        productRepository.create(product);
+
+        Product updatedProduct = new Product();
+        updatedProduct.setProductId("update-test");
+        updatedProduct.setProductName("New Name");
+        updatedProduct.setProductQuantity(99);
+        productRepository.delete("update-test");
+        productRepository.create(updatedProduct);
+
+        Iterator<Product> iterator = productRepository.findAll();
+        Product result = null;
+        while (iterator.hasNext()) {
+            Product current = iterator.next();
+            if (current.getProductId().equals("update-test")) {
+                result = current;
+                break;
+            }
+        }
+
+        assertNotNull(result);
+        assertEquals("New Name", result.getProductName());
+        assertEquals(99, result.getProductQuantity());
+    }
+
 }
