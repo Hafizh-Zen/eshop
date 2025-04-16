@@ -1,9 +1,9 @@
 package id.ac.ui.cs.advprog.eshop.model;
 
+import id.ac.ui.cs.advprog.eshop.enums.OrderStatus;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Builder
@@ -16,34 +16,28 @@ public class Order {
     String status;
 
     public Order(String id, List<Product> products, Long orderTime, String author) {
-        if (products == null || products.isEmpty()) {
-            throw new IllegalArgumentException("Order must have at least one product.");
-        }
-
         this.id = id;
-        this.products = products;
         this.orderTime = orderTime;
         this.author = author;
-        this.status = "WAITING_PAYMENT";
+        this.status = OrderStatus.WAITING_PAYMENT.getValue();
+
+        if (products == null || products.isEmpty()) {
+            throw new IllegalArgumentException();
+        } else {
+            this.products = products;
+        }
     }
 
     public Order(String id, List<Product> products, Long orderTime, String author, String status) {
-        this(id, products, orderTime, author); // call the first constructor
-
-        String[] statusList = {"WAITING_PAYMENT", "FAILED", "SUCCESS", "CANCELLED"};
-        if (Arrays.stream(statusList).noneMatch(item -> item.equals(status))) {
-            throw new IllegalArgumentException("Invalid order status: " + status);
-        }
-
-        this.status = status;
+        this(id, products, orderTime, author);
+        this.setStatus(status);
     }
 
     public void setStatus(String status) {
-        String[] statusList = {"WAITING_PAYMENT", "FAILED", "SUCCESS", "CANCELLED"};
-        if (Arrays.stream(statusList).noneMatch(item -> item.equals(status))) {
-            throw new IllegalArgumentException("Invalid order status: " + status);
+        if (OrderStatus.contains(status)) {
+            this.status = status;
+        } else {
+            throw new IllegalArgumentException();
         }
-
-        this.status = status;
     }
 }
